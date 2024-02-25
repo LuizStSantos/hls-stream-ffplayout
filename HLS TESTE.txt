@@ -1,0 +1,9 @@
+-filter_complex "[0:v]split=4[v1_out][v2][v3][v4]; [v2]scale=w=1280:h=720[v2_out]; [v3]scale=w=960:h=540[v3_out]; [v4]scale=w=640:h=360[v4_out]; [0:a]asplit=4[a1][a2][a3][a4]"
+-map "[v1_out]" -map "[a1]" -c:v:0 h264_nvenc -preset llhq -profile:v high -bf 2 -refs 3 -b:v:0 6500k -aspect 16:9 -c:a:0 aac -ar:0 48000 -b:a:0 128k
+-map "[v2_out]" -map "[a2]" -c:v:1 h264_nvenc -preset llhq -profile:v high -bf 2 -refs 3 -b:v:1 3500k -aspect 16:9 -c:a:1 aac -ar:1 48000 -b:a:1 128k
+-map "[v3_out]" -map "[a3]" -c:v:2 h264_nvenc -preset llhq -profile:v high -bf 2 -refs 3 -b:v:2 2000k -aspect 16:9 -c:a:2 aac -ar:2 48000 -b:a:2 128k
+-map "[v4_out]" -map "[a4]" -c:v:3 h264_nvenc -preset llhq -profile:v high -bf 2 -refs 3 -b:v:3 1000k -aspect 16:9 -c:a:3 aac -ar:3 48000 -b:a:3 128k
+-f hls -hls_time 6 -hls_list_size 10 -hls_flags append_list+delete_segments+omit_endlist 
+-hls_segment_filename /usr/share/ffplayout/public/live/%v-%d.ts -master_pl_name stream.m3u8 
+-var_stream_map "v:0,a:0,name:playlist1080p v:1,a:1,name:playlist720p v:2,a:2,name:playlist540p v:3,a:3,name:playlist360p" 
+/usr/share/ffplayout/public/live/%v.m3u8
